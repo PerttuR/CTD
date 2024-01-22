@@ -7,6 +7,8 @@ library (reshape2)
 library(dplyr)
 library(readxl)
 
+rm(list = ls())
+
 ########## create a 2023 CTD data file
 #PATHS
 # data folder = where the textfiles exist
@@ -29,7 +31,7 @@ for(i in 243:282){#i=376
   lon<-as.numeric(gsub('Longitude:','',o[3,2]))+as.numeric(o[3,3])/60
   date <-gsub('(UTC):','',o[4,5], fixed=TRUE)
   time<-as.character(o[4,6])
-  df<-df[264:nrow(df),]
+  df<-df[243:nrow(df),]
   dfnew<-cSplit(df, 'lines', sep=" ", type.convert=FALSE)
   colnames(dfnew)<-c("Pressure","Temperature","Conductivity","Voltage","Oxygen","OxygenSat",
                      "ScansperBin","Salinity","Density","Depth","dm","sv","PoTemp","flag")

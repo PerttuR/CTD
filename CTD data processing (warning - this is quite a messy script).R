@@ -7,6 +7,7 @@ library (reshape2)
 library(dplyr)
 library(readxl)
 
+rm(list = ls())
 
 wd <- getwd()
 ########## create a 2017 Temperature data file ## DONE
