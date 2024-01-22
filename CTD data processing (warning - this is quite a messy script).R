@@ -7,8 +7,10 @@ library (reshape2)
 library(dplyr)
 library(readxl)
 
+
+wd <- getwd
 ########## create a 2017 Temperature data file ## DONE
-setwd("~/BIFS/BIAS data/CTD/2017")
+setwd(paste0(wd,"/2017 data"))
 
 dat<-data.frame(matrix(nrow=36, ncol=8))
 rownames(dat)<-seq(2,72,by=2)
@@ -48,7 +50,7 @@ for(i in seq(2,72,by=2)){ #i=36
 }
 
 ########## create a 2018 Temperature data file ## DONE
-setwd("~/BIFS/BIAS data/CTD/2018")
+setwd(paste0(wd,"/2018 data"))
 dat<-data.frame(matrix(nrow=81, ncol=9))
 rownames(dat)<-1:81
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
@@ -78,7 +80,7 @@ colnames(dfnew)<-c("Pressure","Temperature","Conductivity","Voltage","Oxygen","O
 }
 
 ########## create a 2019 Temperature data file ## DONE
-setwd("~/BIFS/BIAS data/CTD/2019")
+setwd(paste0(wd,"/2019 data"))
 dat<-data.frame(matrix(nrow=660-617+1, ncol=9))
 rownames(dat)<-617:660
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
@@ -108,7 +110,7 @@ for(i in 617:660){
   }
 
 ########## create a 2020 Temperature data file ## DONE
-setwd("~/BIFS/BIAS data/CTD/2020")
+setwd(paste0(wd,"/2020 data"))
 dat<-data.frame(matrix(nrow=47, ncol=9))
 rownames(dat)<-204:250
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
@@ -138,7 +140,7 @@ for(i in 204:250){#i=216
 }
 
 ########## create a 2021 Temperature data file ## DONE
-setwd("~/BIFS/BIAS data/CTD/2021")
+setwd(paste0(wd,"/2021 data"))
 dat<-data.frame(matrix(nrow=45, ncol=9))
 rownames(dat)<-385:429
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
@@ -168,7 +170,7 @@ for(i in 385:429){#i=416
 }
 
 ########## create a 2022 Temperature data file #DONE
-setwd("~/BIFS/BIAS data/CTD/2022")
+setwd(paste0(wd,"/2022 data"))
 dat<-data.frame(matrix(nrow=45, ncol=9))
 rownames(dat)<-348:392
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
@@ -199,7 +201,7 @@ for(i in 348:392){#i=376
 
 
 ########## create a 2013 Temperature data file
-setwd("~/BIFS/BIAS data/CTD/2013")
+setwd(paste0(wd,"/2013 data"))
 dat<-data.frame(matrix(nrow=34, ncol=10))
 colnames(dat)<-c("lat","lon","lat2","lon2","date","time","SST","SBT","MLD","TCI")
 
@@ -237,7 +239,7 @@ MLD<-thermo.depth(df$Temperature,df$Depth,Smin=0.1,seasonal=TRUE,index=FALSE,mix
 write.csv(dat, file="CTD2013.csv")
 
 ########## create a 2014 Temperature data file TO BE FIXED
-setwd("~/BIFS/BIAS data/CTD/2014")
+setwd(paste0(wd,"/2014 data"))
 dat<-data.frame(matrix(nrow=25, ncol=12))
 rownames(dat)<-c(668:692)
 colnames(dat)<-c("rect","lat","lon","lat2","lon2","lon3",# "lat3", 
@@ -285,7 +287,7 @@ dat[i-668+1,]<-c(rect,lat,lon,lat2,lon2,lon3,#lat3,
 write.csv(dat, file="CTD2014.csv")
 
 ########## create a 2016 Temperature data file #DONE
-setwd("~/BIFS/BIAS data/CTD/2016")
+setwd(paste0(wd,"/2016 data"))
 dat<-data.frame(matrix(nrow=44, ncol=9))
 rownames(dat)<-c(500:543)
 colnames(dat)<-c("rect","lat","lon",#"lat2","lon2",
@@ -328,7 +330,7 @@ write.csv(dat, file="CTD2016.csv")
 
 
 ########## create a 2015 Temperature data file #DONE
-setwd("~/BIFS/BIAS data/CTD/2015")
+setwd(paste0(wd,"/2015 data"))
 dat<-data.frame(matrix(nrow=19, ncol=9))
 rownames(dat)<-c(576:594)
 colnames(dat)<-c("rect","lat","lon",#"lat2","lon2",
