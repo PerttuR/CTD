@@ -8,7 +8,7 @@ library(dplyr)
 library(readxl)
 
 
-wd <- getwd
+wd <- getwd()
 ########## create a 2017 Temperature data file ## DONE
 setwd(paste0(wd,"/2017 data"))
 
@@ -371,3 +371,5 @@ for(i in c(577:594)){#i=576
 
 write.csv(dat, file="CTD2015.csv")
 
+# Reset working directory
+setwd(wd)
