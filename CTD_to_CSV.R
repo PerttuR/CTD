@@ -13,7 +13,8 @@ rm(list = ls())
 #PATHS
 # data folder = where the textfiles exist
 # data <- paste0(getwd(), .Platform$file.sep, "2023 data/") #Location where you store original unmodified data
-setwd("C:/perttu/eu-tike/ACOU_DB/CTD/CTD/2023 data")
+wd <- getwd()
+setwd(paste0(wd,"/2023 data"))
 out <- paste0(getwd(), .Platform$file.sep, "out/") # folder where outputs are written
 
 
