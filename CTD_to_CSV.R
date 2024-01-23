@@ -13,6 +13,7 @@ rm(list = ls())
 
 source("./db.R")
 
+# Note: setwd() breaks read.dbTable function
 getHaulMap <- function(year) {
   trip <- read.dbTable("suomu", "trip", paste0("year=", year, " AND project_fk=1"))
   if(nrow(trip) != 1) {
