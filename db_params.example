@@ -1,0 +1,6 @@
+#Example db_params file, copy to db_params.R and fill in the correct values
+dbname <- "public"
+host <- "localhost"
+port <- 5432
+user <- "postgres"
+password<-"postgres"
