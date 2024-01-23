@@ -9,14 +9,27 @@ library(readxl)
 
 rm(list = ls())
 
+#Get haul map
+
+source("./db.R")
+
+getHaulMap <- function(year) {
+  trip <- read.dbTable("suomu", "trip", paste0("year=", year, " AND project_fk=1"))
+  if(nrow(trip) != 1) {
+    stop(paste0("Year ", year, " matched multiple or no trip records"))
+  }
+  haul <- read.dbTable("suomu", "haul", paste0("trip_fk=", trip$id))
+  return(setNames(haul$id, haul$location_description))
+}
+
 ########## create a 2023 CTD data file
 #PATHS
 # data folder = where the textfiles exist
 # data <- paste0(getwd(), .Platform$file.sep, "2023 data/") #Location where you store original unmodified data
 wd <- getwd()
-setwd(paste0(wd,"/2023 data"))
-out <- paste0(getwd(), .Platform$file.sep, "out/") # folder where outputs are written
-
+map_2023 <- getHaulMap(2023)
+wd_2023 <- paste0(wd,"/2023 data")
+out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 
 
 dat<-data.frame(matrix(nrow=43, ncol=9))
