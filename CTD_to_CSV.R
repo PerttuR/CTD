@@ -23,6 +23,19 @@ getHaulMap <- function(year) {
   return(setNames(haul$id, haul$location_description))
 }
 
+readCnvFile <- function(path) {
+  lines = readLines(path)
+  for(row in 1:length(lines)) {
+    if(lines[row] == '*END*') {
+      #TODO: check that this split works
+      metadata <- na.omit(lines[1:row])
+      data <- na.omit(lines[row+1:length(lines)])
+      return(setNames(list(data, metadata), c("data", "metadata")))
+    }
+  }
+  return(setNames(list(lines, NULL), c("metadata", "data")))
+}
+
 ########## create a 2023 CTD data file
 #PATHS
 # data folder = where the textfiles exist
@@ -31,7 +44,8 @@ wd <- getwd()
 map_2023 <- getHaulMap(2023)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
-
+cnvFiles <- list.files(wd_2023)
+first <- readCnvFile(paste0(wd_2023, "/",cnvFiles[[1]]))
 
 dat<-data.frame(matrix(nrow=43, ncol=9))
 rownames(dat)<-243:282
