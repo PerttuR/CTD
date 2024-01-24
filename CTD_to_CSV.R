@@ -30,6 +30,8 @@ readCnvFile <- function(path) {
     if(lines[row] == "*END*") {
       #TODO: check that this split works
       metadata <- na.omit(lines[1:(row - 1)])
+      Encoding(metadata) <- "UTF-8"
+      metadata <- str_replace_all(metadata, "\xe9", "Θ")
       data <- na.omit(lines[-(1:row)])
       data <- read.table(textConnection(paste(data, collapse="\n")))
       dataNames <- data.frame(str_match(metadata, "name (?<number>[0-9]+) = (?<name>.+): ?(?<comment>.*)"))
