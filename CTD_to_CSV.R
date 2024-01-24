@@ -35,6 +35,15 @@ coordinate.fix <- function(coordinate) {
   return(as.numeric(arr[[1]]) + as.numeric(arr[[2]]) / 60)
 }
 
+time.fix <- function(time) {
+  arr <- unlist(strsplit(time, "\\.| "))
+  result <- paste0(arr[[3]],"-",arr[[2]],"-",arr[[1]])
+  if(length(arr) > 3) {
+    result <- paste0(result, " ", arr[[4]])
+  }
+  return(result)
+}
+
 extract.metadata <- function(metadata) {
   cols <- c(
     "id",
@@ -51,12 +60,17 @@ extract.metadata <- function(metadata) {
   result <- data.frame(matrix(ncol=length(cols), nrow=1))
   names(result) <- cols
 
+  timeDf <- str_match_wrapper(metadata,
+    "\\*\\* Date and time \\(UTC\\):0*(?<time>.+)")
+  result$ctd_calculation_time <- time.fix(timeDf$time)
+
   longitudeDf <- str_match_wrapper(metadata,
     "\\*\\* Latitude:0*(?<longitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
   latitudeDf <- str_match_wrapper(metadata,
     "\\*\\* Longitude:0*(?<latitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
 
-  result$location <- paste0("POINT(", coordinate.fix(longitudeDf$longitude)," ",coordinate.fix(latitudeDf$latitude), ")")
+  result$location <- paste0("POINT(", coordinate.fix(longitudeDf$longitude),
+    " ",coordinate.fix(latitudeDf$latitude), ")")
 
   depthDf <- str_match_wrapper(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)")
   result$bottom_depth <- depthDf$depth
