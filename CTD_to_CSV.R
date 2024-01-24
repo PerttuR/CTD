@@ -25,6 +25,16 @@ getHaulMap <- function(year) {
   return(setNames(haul$id, haul$location_description))
 }
 
+str_match_wrapper <- function(x, pattern) {
+  df <- data.frame(str_match(x, pattern))
+  return(na.omit(df))
+}
+
+coordinate.fix <- function(coordinate) {
+  arr <- unlist(strsplit(coordinate, " "))
+  return(as.numeric(arr[[1]]) + as.numeric(arr[[2]]) / 60)
+}
+
 extract.metadata <- function(metadata) {
   cols <- c(
     "id",
@@ -41,22 +51,25 @@ extract.metadata <- function(metadata) {
   result <- data.frame(matrix(ncol=length(cols), nrow=1))
   names(result) <- cols
 
-  depthDf <- data.frame(str_match(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)"))
-  depthDf <- na.omit(depthDf)
+  longitudeDf <- str_match_wrapper(metadata,
+    "\\*\\* Latitude:0*(?<longitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
+  latitudeDf <- str_match_wrapper(metadata,
+    "\\*\\* Longitude:0*(?<latitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
 
+  result$location <- paste0("POINT(", coordinate.fix(longitudeDf$longitude)," ",coordinate.fix(latitudeDf$latitude), ")")
+
+  depthDf <- str_match_wrapper(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)")
   result$bottom_depth <- depthDf$depth
 
   #static code
   result$device_category_code <- 130
 
-  indexDf <- data.frame(str_match(metadata, "\\*\\* Index:0*(?<index>[0-9]+)"))
-  indexDf <- na.omit(indexDf)
+  indexDf <- str_match_wrapper(metadata, "\\*\\* Index:0*(?<index>[0-9]+)")
   result$aranda_index <- indexDf$index
 
-  deviceDf <- data.frame(str_match(metadata, "\\* (?<device>.+) Data File:"))
-  deviceDf <- na.omit(deviceDf)
-
+  deviceDf <- str_match_wrapper(metadata, "\\* (?<device>.+) Data File:")
   result$ctd_device <- deviceDf$device
+
   return(result)
 }
 
