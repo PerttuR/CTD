@@ -13,6 +13,7 @@ rm(list = ls())
 #Get haul map
 
 source("./db.R")
+source("./cnv.R")
 
 # Note: setwd() breaks read.dbTable function
 getHaulMap <- function(year) {
@@ -24,23 +25,39 @@ getHaulMap <- function(year) {
   return(setNames(haul$id, haul$location_description))
 }
 
-readCnvFile <- function(path) {
-  lines = readLines(path)
-  for(row in seq_along(lines)) {
-    if(lines[row] == "*END*") {
-      #TODO: check that this split works
-      metadata <- na.omit(lines[1:(row - 1)])
-      Encoding(metadata) <- "UTF-8"
-      metadata <- str_replace_all(metadata, "\xe9", "Θ")
-      data <- na.omit(lines[-(1:row)])
-      data <- read.table(textConnection(paste(data, collapse="\n")))
-      dataNames <- data.frame(str_match(metadata, "name (?<number>[0-9]+) = (?<name>.+): ?(?<comment>.*)"))
-      dataNames <- dataNames %>% filter(!is.na(number)) %>% mutate(number = as.numeric(number) + 1) %>% arrange(number)
-      names(data) <- dataNames$name
-      return(setNames(list(data, metadata), c("data", "metadata")))
-    }
-  }
-  return(setNames(list(lines, NULL), c("metadata", "data")))
+extract.metadata <- function(metadata) {
+  cols <- c(
+    "id",
+    "handler_fk",
+    "trip_fk",
+    "haul_fk",
+    "ctd_calculation_time",
+    "location",
+    "bottom_depth",
+    "device_category_code",
+    "aranda_index",
+    "ctd_device"
+  )
+  result <- data.frame(matrix(ncol=length(cols), nrow=1))
+  names(result) <- cols
+
+  depthDf <- data.frame(str_match(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)"))
+  depthDf <- na.omit(depthDf)
+
+  result$bottom_depth <- depthDf$depth
+
+  #static code
+  result$device_category_code <- 130
+
+  indexDf <- data.frame(str_match(metadata, "\\*\\* Index:0*(?<index>[0-9]+)"))
+  indexDf <- na.omit(indexDf)
+  result$aranda_index <- indexDf$index
+
+  deviceDf <- data.frame(str_match(metadata, "\\* (?<device>.+) Data File:"))
+  deviceDf <- na.omit(deviceDf)
+
+  result$ctd_device <- deviceDf$device
+  return(result)
 }
 
 ########## create a 2023 CTD data file
@@ -52,12 +69,20 @@ map_2023 <- getHaulMap(2023)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
-first <- readCnvFile(paste0(wd_2023, "/",cnvFiles[[1]]))
+first <- read.cnv(paste0(wd_2023, "/",cnvFiles[[1]]))
+extract.metadata(first$metadata)
+
+
+
 
 
 dat<-data.frame(matrix(nrow=43, ncol=9))
 rownames(dat)<-243:282
 colnames(dat)<-c("rect","lat","lon","date","time","SST","SBT","MLD","TCI")
+
+
+
+
 
 for(i in 243:282){#i=376
   df <- tibble(lines = readLines (paste ("aranda0",i,"a.cnv", sep="")))
