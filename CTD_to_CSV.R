@@ -15,14 +15,23 @@ rm(list = ls())
 source("./db.R")
 source("./cnv.R")
 
-# Note: setwd() breaks read.dbTable function
-getHaulMap <- function(year) {
+
+get.trip <- function(year) {
   trip <- read.dbTable("suomu", "trip", paste0("year=", year, " AND project_fk=1"))
   if(nrow(trip) != 1) {
     stop(paste0("Year ", year, " matched multiple or no trip records"))
   }
+  return(trip)
+}
+
+# Note: setwd() breaks read.dbTable function
+get.haul.map <- function(trip) {
   haul <- read.dbTable("suomu", "haul", paste0("trip_fk=", trip$id))
   return(setNames(haul$id, haul$location_description))
+}
+
+get.handler <- function() {
+  return(read.dbTable("suomu","handler"))
 }
 
 str_match_wrapper <- function(x, pattern) {
@@ -44,7 +53,7 @@ time.fix <- function(time) {
   return(result)
 }
 
-extract.metadata <- function(metadata) {
+extract.metadata <- function(metadata, trip, haul.map, handler) {
   cols <- c(
     "id",
     "handler_fk",
@@ -59,6 +68,13 @@ extract.metadata <- function(metadata) {
   )
   result <- data.frame(matrix(ncol=length(cols), nrow=1))
   names(result) <- cols
+
+  result$trip_fk <- trip$id
+
+  rectangle <- str_match_wrapper(
+    metadata,
+    "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
+  result$haul_fk <- haul.map[rectangle]
 
   timeDf <- str_match_wrapper(metadata,
     "\\*\\* Date and time \\(UTC\\):0*(?<time>.+)")
@@ -84,6 +100,8 @@ extract.metadata <- function(metadata) {
   deviceDf <- str_match_wrapper(metadata, "\\* (?<device>.+) Data File:")
   result$ctd_device <- deviceDf$device
 
+
+
   return(result)
 }
 
@@ -92,12 +110,15 @@ extract.metadata <- function(metadata) {
 # data folder = where the textfiles exist
 # data <- paste0(getwd(), .Platform$file.sep, "2023 data/") #Location where you store original unmodified data
 wd <- getwd()
-map_2023 <- getHaulMap(2023)
+handlers <- get.handler()
+
+trip <- get.trip(2023)
+map_2023 <- get.haul.map(trip)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
 first <- read.cnv(paste0(wd_2023, "/",cnvFiles[[1]]))
-extract.metadata(first$metadata)
+extract.metadata(first$metadata, trip, map_2023, handler)
 
 
 
