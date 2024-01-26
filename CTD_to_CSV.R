@@ -100,8 +100,6 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   deviceDf <- str_match_wrapper(metadata, "\\* (?<device>.+) Data File:")
   result$ctd_device <- deviceDf$device
 
-
-
   return(result)
 }
 
@@ -110,7 +108,7 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
 # data folder = where the textfiles exist
 # data <- paste0(getwd(), .Platform$file.sep, "2023 data/") #Location where you store original unmodified data
 wd <- getwd()
-handlers <- get.handler()
+handler <- get.handler()
 
 trip <- get.trip(2023)
 map_2023 <- get.haul.map(trip)
