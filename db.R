@@ -29,32 +29,53 @@ validate.params <- function(schema, table) {
 read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
   validate.params(schema, table)
   where = ifelse(is.na(where),"",paste0(" WHERE ", where))
-  tmp <- new.env();
-  source("db_params.R", local=tmp);
-  drv <- RPostgres::Postgres();
-  resolved_dbname = ifelse(is.null(dbname), tmp$dbname, dbname);
+  tmp <- new.env()
+  source("db_params.R", local=tmp)
+  drv <- RPostgres::Postgres()
+  resolved_dbname <- ifelse(is.null(dbname), tmp$dbname, dbname)
   con <- dbConnect(drv, dbname = resolved_dbname,
                    host = tmp$host, tmp$port,
                    user = tmp$user, password = tmp$password)
-  rm(tmp);
+  rm(tmp)
   data <- set_utf8(dbGetQuery(con, paste0('SELECT * from "',schema,'".',table,where)))
-  dbDisconnect(con);
-  rm(con);
-  return(data);
+  dbDisconnect(con)
+  rm(con)
+  return(data)
 }
 
 query.dbTable <- function(schema, table, dbname = NULL, query ) {
   validate.params(schema, table)
-  tmp <- new.env();
-  source("db_params.R", local=tmp);
-  drv <- RPostgres::Postgres();
-  resolved_dbname = ifelse(is.null(dbname), tmp$dbname, dbname);
+  tmp <- new.env()
+  source("db_params.R", local=tmp)
+  drv <- RPostgres::Postgres()
+  resolved_dbname <- ifelse(is.null(dbname), tmp$dbname, dbname)
   con <- dbConnect(drv, dbname = resolved_dbname,
                    host = tmp$host, tmp$port,
-                   user = tmp$user, password = tmp$password);
-  rm(tmp);
-  data <- set_utf8(dbGetQuery(con, query));
-  dbDisconnect(con);
-  rm(con);
-  return(data);
+                   user = tmp$user, password = tmp$password)
+  rm(tmp)
+  data <- set_utf8(dbGetQuery(con, query))
+  dbDisconnect(con)
+  rm(con)
+  return(data)
+}
+
+write.dbTable <- function(schema, table, data, dbname = NULL) {
+  validate.params(schema, table)
+  tmp <- new.env()
+  source("db_params.R", local=tmp)
+  drv <- RPostgres::Postgres()
+  resolved_dbname <- ifelse(is.null(dbname), tmp$dbname, dbname)
+  con <- dbConnect(drv, dbname = resolved_dbname,
+                   host = tmp$host, tmp$port,
+                   user = tmp$user, password = tmp$password)
+  query.for.ids <- paste0(
+    'select nextval(\'suomu.hibernate_sequence\') as id from generate_series(1,'
+    ,nrow(data),
+    ');'
+  )
+  rm(tmp)
+  data$id <- dbGetQuery(con, query.for.ids)$id
+  dbAppendTable(con, Id(schema=schema, table=table), data)
+  dbDisconnect(con)
+  rm(con)
 }

@@ -85,8 +85,12 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   latitudeDf <- str_match_wrapper(metadata,
     "\\*\\* Longitude:0*(?<latitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
 
-  result$location <- paste0("POINT(", coordinate.fix(longitudeDf$longitude),
-    " ",coordinate.fix(latitudeDf$latitude), ")")
+  result$location <- paste0("POINT (",
+    coordinate.fix(latitudeDf$latitude),
+    " ",
+    coordinate.fix(longitudeDf$longitude),
+    ")"
+  )
 
   depthDf <- str_match_wrapper(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)")
   result$bottom_depth <- depthDf$depth
@@ -110,13 +114,14 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
 wd <- getwd()
 handler <- get.handler()
 
-trip <- get.trip(2023)
+trip <- get.trip(2022)
 map_2023 <- get.haul.map(trip)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
 first <- read.cnv(paste0(wd_2023, "/",cnvFiles[[1]]))
-extract.metadata(first$metadata, trip, map_2023, handler)
+met <- extract.metadata(first$metadata, trip, map_2023, handler)
+met2 <- write.dbTable("suomu", "ctd_metadata", met)
 
 
 
