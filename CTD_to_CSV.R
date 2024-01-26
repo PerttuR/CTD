@@ -4,10 +4,10 @@ library(expss)
 library(splitstackshape)
 library(rLakeAnalyzer)
 library (reshape2)
+library(purrr)
 library(dplyr)
 library(readxl)
 library(stringr)
-
 rm(list = ls())
 
 #Get haul map
@@ -69,21 +69,24 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   result <- data.frame(matrix(ncol=length(cols), nrow=1))
   names(result) <- cols
 
-  result$trip_fk <- trip$id
-
   rectangle <- str_match_wrapper(
     metadata,
     "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
   result$haul_fk <- haul.map[rectangle]
+
+  if(is.na(result$haul_fk)) {
+    result$trip_fk <- trip$id
+  }
+
 
   timeDf <- str_match_wrapper(metadata,
     "\\*\\* Date and time \\(UTC\\):0*(?<time>.+)")
   result$ctd_calculation_time <- time.fix(timeDf$time)
 
   longitudeDf <- str_match_wrapper(metadata,
-    "\\*\\* Latitude:0*(?<longitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
+    "\\*\\* Latitude:0*(?<longitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
   latitudeDf <- str_match_wrapper(metadata,
-    "\\*\\* Longitude:0*(?<latitude>[0-9]{2} [0-9]{2}(.[0-9]+)?)")
+    "\\*\\* Longitude:0*(?<latitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
 
   result$location <- paste0("POINT (",
     coordinate.fix(latitudeDf$latitude),
@@ -119,9 +122,20 @@ map_2023 <- get.haul.map(trip)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
-first <- read.cnv(paste0(wd_2023, "/",cnvFiles[[1]]))
-met <- extract.metadata(first$metadata, trip, map_2023, handler)
-met2 <- write.dbTable("suomu", "ctd_metadata", met)
+parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(wd_2023, "/",el)))})
+parsed <- lapply(parsed, function(el) {
+  el$extracted <- extract.metadata(el$metadata, trip, map_2023, handler)
+  return(el)
+})
+
+parsed_pivot <- list()
+parsed_pivot$extracted <- lapply(parsed, function(el) {return(el$extracted)})
+parsed_pivot$data <- lapply(parsed, function(el) {return(el$data)})
+parsed_pivot$metadata <- lapply(parsed, function(el) {return(el$metadata)})
+
+parsed_pivot$extracted <- bind_rows(parsed_pivot$extracted)
+
+metadata.with.ids <- write.dbTable("suomu", "ctd_metadata", parsed_pivot$extracted)
 
 
 

@@ -75,7 +75,9 @@ write.dbTable <- function(schema, table, data, dbname = NULL) {
   )
   rm(tmp)
   data$id <- dbGetQuery(con, query.for.ids)$id
+  dbExecute(con, "set DATESTYLE TO ISO")
   dbAppendTable(con, Id(schema=schema, table=table), data)
   dbDisconnect(con)
   rm(con)
+  return(data)
 }
