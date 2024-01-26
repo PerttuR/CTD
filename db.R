@@ -14,19 +14,21 @@ set_utf8 <- function(x){
   return(x)
 }
 
-read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
-  where = ifelse(is.na(where),"",paste0(" WHERE ", where))
-  #Some validation
+validate.params <- function(schema, table) {
   if(length(c(table)) != 1 || length(c(schema)) != 1) {
-    return(NULL);
+    stop("missing schema or table name");
   }
   if(!grepl("^[-[:digit:][:alpha:]_]+$", table)) {
-    return(NULL);
+    stop(paste("bad table name", table));
   }
   if(!grepl("^[-[:digit:][:alpha:]_]+$", schema)) {
-    return (NULL);
+    stop(paste("bad schema name", schema));
   }
-  #End validation
+}
+
+read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
+  validate.params(schema, table)
+  where = ifelse(is.na(where),"",paste0(" WHERE ", where))
   tmp <- new.env();
   source("db_params.R", local=tmp);
   drv <- RPostgres::Postgres();
@@ -42,17 +44,7 @@ read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
 }
 
 query.dbTable <- function(schema, table, dbname = NULL, query ) {
-  #Some validation
-  if(length(c(table)) != 1 || length(c(schema)) != 1) {
-    return(NULL);
-  }
-  if(!grepl("^[-[:digit:][:alpha:]_]+$", table)) {
-    return(NULL);
-  }
-  if(!grepl("^[-[:digit:][:alpha:]_]+$", schema)) {
-    return (NULL);
-  }
-  #End validation
+  validate.params(schema, table)
   tmp <- new.env();
   source("db_params.R", local=tmp);
   drv <- RPostgres::Postgres();
