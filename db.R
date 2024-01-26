@@ -1,20 +1,21 @@
 library(RPostgres);
 
+set_utf8 <- function(x){
+  # Declare UTF-8 encoding on all character strings:
+  for(i in 1:ncol(x)){
+    if(is.character(x[, i])) {
+      Encoding(x[, i]) <- "UTF-8"
+    }
+  }
+  # Same on column names:
+  for(name in colnames(x)){
+    Encoding(name) <- "UTF-8"
+  }
+  return(x)
+}
+
 read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
   where = ifelse(is.na(where),"",paste0(" WHERE ", where))
-  set_utf8 = function(x){
-    # Declare UTF-8 encoding on all character strings:
-    for(i in 1:ncol(x)){
-      if(is.character(x[, i])) {
-        Encoding(x[, i]) <- "UTF-8"
-      }
-    }
-    # Same on column names:
-    for(name in colnames(x)){
-      Encoding(name) <- "UTF-8"
-    }
-    return(x)
-  }
   #Some validation
   if(length(c(table)) != 1 || length(c(schema)) != 1) {
     return(NULL);
@@ -41,19 +42,6 @@ read.dbTable <- function(schema, table, where = NA, dbname = NULL) {
 }
 
 query.dbTable <- function(schema, table, dbname = NULL, query ) {
-  set_utf8 = function(x){
-    # Declare UTF-8 encoding on all character strings:
-    for(i in 1:ncol(x)){
-      if(is.character(x[, i])) {
-        Encoding(x[, i]) <- "UTF-8"
-      }
-    }
-    # Same on column names:
-    for(name in colnames(x)){
-      Encoding(name) <- "UTF-8"
-    }
-    return(x)
-  }
   #Some validation
   if(length(c(table)) != 1 || length(c(schema)) != 1) {
     return(NULL);
@@ -78,19 +66,3 @@ query.dbTable <- function(schema, table, dbname = NULL, query ) {
   rm(con);
   return(data);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
