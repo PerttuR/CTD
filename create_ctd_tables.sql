@@ -21,4 +21,28 @@ CREATE TABLE suomu.ctd_metadata (
 grant select on suomu.ctd_metadata to suomu_r;
 grant all on suomu.ctd_metadata to suomu_rw;
 
+
+CREATE TABLE suomu.ctd_data (
+    id BIGINT PRIMARY KEY,
+    ctd_metadata_fk BIGINT NOT NULL references suomu.ctd_metadata (id),
+    pressure double precision,
+    pressure_qv double precision,
+    temperature double precision,
+    temperature_qv double precision,
+    salinity_practical double precision,
+    salinity_practical_qv double precision,
+    oxygen_dissolved double precision,
+    oxygen_dissolved_qv double precision,
+    oxygen_saturation double precision,
+    oxygen_saturation_qv double precision,
+    conductivity double precision,
+    conductivity_qv double precision,
+    sound_velocity double precision,
+    depth double precision,
+    density double precision
+);
+
+grant select on suomu.ctd_data to suomu_r;
+grant all on suomu.ctd_data to suomu_rw;
+
 end;
