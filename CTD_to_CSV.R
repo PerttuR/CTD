@@ -22,9 +22,13 @@ source("./cnv.R")
 wd <- getwd()
 handler <- get.handler()
 
-trip <- get.trip(2022)
+#parsittava vuosi / year to be parsed
+trip <- get.trip(2022) 
+#tarkistaa onko metadata jo olemassa / check if data already exist
 check.empty(trip)
+#map haul ID from SUOMU DB
 map_2023 <- get.haul.map(trip)
+#where files exist
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
