@@ -23,6 +23,7 @@ wd <- getwd()
 handler <- get.handler()
 
 trip <- get.trip(2022)
+check.empty(trip)
 map_2023 <- get.haul.map(trip)
 wd_2023 <- paste0(wd,"/2023 data")
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
@@ -68,4 +69,4 @@ data.omit.columns <- parsed_pivot$data %>% select(any_of(data.table.columns))
 if(any(is.na(data.omit.columns$ctd_metadata_fk))) {
   stop("metadata id reference would be null for some columns")
 }
-trashcan.variable <- write.dbTable("suomu", "ctd_data", data.omit.columns)
+skip.data <- write.dbTable("suomu", "ctd_data", data.omit.columns)

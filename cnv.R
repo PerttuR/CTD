@@ -145,3 +145,13 @@ read.cnv <- function(path) {
   }
   return(setNames(list(lines, NULL), c("metadata", "data")))
 }
+
+check.empty <- function(trip) {
+  if(nrow(trip) != 1) {
+    stop("trip dataframe must have exactly one row")
+  }
+  metadata <- read.dbTable("suomu", "ctd_metadata", paste0("trip_fk=", trip$id))
+  if(nrow(metadata) != 0) {
+    stop(paste0("data exists for year ", trip$year))
+  }
+}
