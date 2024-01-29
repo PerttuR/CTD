@@ -70,3 +70,10 @@ if(any(is.na(data.omit.columns$ctd_metadata_fk))) {
   stop("metadata id reference would be null for some columns")
 }
 skip.data <- write.dbTable("suomu", "ctd_data", data.omit.columns)
+
+cat(
+  "Wrote ",
+  nrow(metadata.with.ids),
+  "rows of metadata and",
+  nrow(skip.data),
+  "rows of data.\n")
