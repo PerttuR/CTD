@@ -30,6 +30,7 @@ check.empty(trip)
 map_2023 <- get.haul.map(trip)
 #where files exist
 wd_2023 <- paste0(wd,"/2023 data")
+#
 out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
 cnvFiles <- list.files(wd_2023)
 parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(wd_2023, "/",el)))})
