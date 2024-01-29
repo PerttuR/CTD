@@ -95,6 +95,37 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   return(result)
 }
 
+rename.data <- function(data) {
+  name.map <- c(
+    "prdM" = "pressure",
+    "tv290C" = "temperature",
+    "t068C" = "temperature",
+    "t168C" = "temperature_qv",
+    "c0mS/cm" = "conductivity",
+    "c1mS/cm" = "conductivity_qv",
+    "sal00" = "salinity_practical",
+    "sal11" = "salinity_practical_qv",
+    "sigma-t00" = "density",
+    "depSM" = "depth",
+    "svCM" = "sound_velocity",
+    "sbeox0PS" = "oxygen_saturation",
+    "sbeox1PS" = "oxygen_saturation_qv",
+    "sbeox0ML/L" = "oxygen_dissolved",
+    "sbeox1ML/L" = "oxygen_dissolved_qv",
+    "sigma-Θ00" = "density"
+  )
+  data.names <- names(data)
+  for(i in 1:length(data.names)) {
+    data.names[[i]] <- ifelse(
+      is.na(name.map[data.names[[i]]]),
+      data.names[[i]],
+      name.map[data.names[[i]]]
+    )
+  }
+  names(data) <- data.names
+  return(data)
+}
+
 read.cnv <- function(path) {
   lines = readLines(path)
   for(row in seq_along(lines)) {
@@ -108,6 +139,7 @@ read.cnv <- function(path) {
       dataNames <- data.frame(str_match(metadata, "name (?<number>[0-9]+) = (?<name>.+): ?(?<comment>.*)"))
       dataNames <- dataNames %>% filter(!is.na(number)) %>% mutate(number = as.numeric(number) + 1) %>% arrange(number)
       names(data) <- dataNames$name
+      data <- rename.data(data)
       return(setNames(list(data, metadata), c("data", "metadata")))
     }
   }

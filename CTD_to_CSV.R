@@ -47,3 +47,25 @@ for(i in 1:length(parsed_pivot$data)) {
 }
 
 parsed_pivot$data <- bind_rows(parsed_pivot$data)
+data.table.columns <- c("ctd_metadata_fk",
+    "pressure",
+    "pressure_qv",
+    "temperature",
+    "temperature_qv",
+    "salinity_practical",
+    "salinity_practical_qv",
+    "oxygen_dissolved",
+    "oxygen_dissolved_qv",
+    "oxygen_saturation",
+    "oxygen_saturation_qv",
+    "conductivity",
+    "conductivity_qv",
+    "sound_velocity",
+    "depth",
+    "density"
+)
+data.omit.columns <- parsed_pivot$data %>% select(any_of(data.table.columns))
+if(any(is.na(data.omit.columns$ctd_metadata_fk))) {
+  stop("metadata id reference would be null for some columns")
+}
+trashcan.variable <- write.dbTable("suomu", "ctd_data", data.omit.columns)
