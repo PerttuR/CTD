@@ -23,7 +23,7 @@ wd <- getwd()
 handler <- get.handler()
 
 #parsittava vuosi / year to be parsed
-trip <- get.trip(2022) 
+trip <- get.trip(2023) 
 #tarkistaa onko metadata jo olemassa / check if data already exist
 check.empty(trip)
 #map haul ID from SUOMU DB
