@@ -15,6 +15,7 @@ rm(list = ls())
 source("./db.R")
 source("./cnv.R")
 
+year <- 2023
 ########## create a 2023 CTD data file
 #PATHS
 # data folder = where the textfiles exist
@@ -23,19 +24,18 @@ wd <- getwd()
 handler <- get.handler()
 
 #parsittava vuosi / year to be parsed
-trip <- get.trip(2023) 
+trip <- get.trip(year) 
 #tarkistaa onko metadata jo olemassa / check if data already exist
 check.empty(trip)
 #map haul ID from SUOMU DB
-map_2023 <- get.haul.map(trip)
+haul_map <- get.haul.map(trip)
 #where files exist
-wd_2023 <- paste0(wd,"/2023 data")
-#
-out_2023 <- paste0(wd_2023, .Platform$file.sep, "out/") # folder where outputs are written
-cnvFiles <- list.files(wd_2023)
-parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(wd_2023, "/",el)))})
+data_wd <- paste0(wd,paste0("/", year, " data")
+
+cnvFiles <- list.files(data_wd)
+parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(data_wd, "/",el)))})
 parsed <- lapply(parsed, function(el) {
-  el$extracted <- extract.metadata(el$metadata, trip, map_2023, handler)
+  el$extracted <- extract.metadata(el$metadata, trip, haul_map, handler)
   return(el)
 })
 
