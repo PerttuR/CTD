@@ -16,12 +16,16 @@ source("./db.R")
 source("./cnv.R")
 
 year <- 2023
+default_handler <- 27
 ########## create a 2023 CTD data file
 #PATHS
 # data folder = where the textfiles exist
 # data <- paste0(getwd(), .Platform$file.sep, "2023 data/") #Location where you store original unmodified data
 wd <- getwd()
 handler <- get.handler()
+if(nrow(handler %>% filter(id == default_handler)) < 1) {
+  stop("Missing default handler")
+}
 
 #parsittava vuosi / year to be parsed
 trip <- get.trip(year) 
@@ -35,7 +39,7 @@ data_wd <- paste0(wd,paste0("/", year, " data"))
 cnvFiles <- list.files(data_wd, pattern="*.cnv")
 parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(data_wd, "/",el)))})
 parsed <- lapply(parsed, function(el) {
-  el$extracted <- extract.metadata(el$metadata, trip, haul_map, handler)
+  el$extracted <- extract.metadata(el$metadata, trip, haul_map, default_handler)
   return(el)
 })
 

@@ -62,7 +62,7 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   if(is.na(result$haul_fk)) {
     result$trip_fk <- trip$id
   }
-
+  result$handler_fk <- handler
 
   timeDf <- str_match_wrapper(metadata,
     "\\*\\* Date and time \\(UTC\\):0*(?<time>.+)")
