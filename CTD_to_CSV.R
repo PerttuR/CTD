@@ -30,7 +30,7 @@ check.empty(trip)
 #map haul ID from SUOMU DB
 haul_map <- get.haul.map(trip)
 #where files exist
-data_wd <- paste0(wd,paste0("/", year, " data")
+data_wd <- paste0(wd,paste0("/", year, " data"))
 
 cnvFiles <- list.files(data_wd)
 parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(data_wd, "/",el)))})
