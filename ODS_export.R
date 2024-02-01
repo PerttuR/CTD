@@ -82,9 +82,32 @@ result$station <- mega$station_number
 result$type <- "C"
 result$"yyyy-mm-ddThh:mm:ss.sss" <- coalesce(mega$start_time.x, mega$stop_time)
 
-result$latitude <- lapply(
+result$latitude <- unlist(lapply(
   mega$geometry,
-  function(geom) {return(st_coordinates(geom)[,2])})
-result$longitude <- lapply(
+  function(geom) {return(st_coordinates(geom)[,2])}))
+result$longitude <- unlist(lapply(
   mega$geometry,
-  function(geom) {return(st_coordinates(geom)[,1])})
+  function(geom) {return(st_coordinates(geom)[,1])}))
+
+result$"Bot. Depth [m]" <- mega$bottom_depth
+
+result$"Platform Code" <- "34A1" # TODO: get this from shipyear for Dana
+result$"Device Category Code" <- mega$device_category_code
+result$"Distributor Code" <- 5013 #Natural Resources Institute Finland (Main Office)
+result$"Custodian Code" <- 5013
+
+result$"Originator Code" <- 5013
+result$"Project Code" <- 11272 #BIAS, TODO: project?
+result$"Pressure [dbar] or Depth [m]" <- mega$pressure
+result$"QV:ODV:Depth [m]" <- mega$pressure_qv
+
+result$"Temperature [degC]" <- mega$temperature
+result$"QV:ODV:Temperature [degC]" <- mega$temperature_qv
+result$"Practical Salinity [dmnless]" <- mega$salinity_practical
+result$"QV:ODV:Practical Salinity [dmnless]" <- mega$salinity_practical_qv
+result$"Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved
+result$"QV:ODV:Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved_qv
+
+outdir <- paste0(c(wd, "out"), collapse="/")
+dir.create(outdir, showWarnings = FALSE)
+write.csv2(result, file=paste0(outdir, "/ODS-", year, ".csv"), na="", row.names=FALSE)
