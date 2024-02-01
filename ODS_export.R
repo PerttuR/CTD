@@ -8,9 +8,15 @@ library(purrr)
 library(dplyr)
 library(readxl)
 library(stringr)
+library(sf)
+
 rm(list = ls())
 
 source("./db.R")
+
+ewkb_to_sf <- function(data) {
+  return(st_as_sfc(structure(data, class="WKB"), EWKB=T))
+}
 
 get.handler <- function() {
   return(read.dbTable("suomu","handler"))
@@ -29,6 +35,12 @@ get.haul <- function(trip) {
     stop("Function argument should be exactly one trip")
   }
   haul <- read.dbTable("suomu", "haul", paste0("trip_fk = ", trip$id))
+haul$start_location = ewkb_to_sf(haul$start_location)
+haul$stop_location = ewkb_to_sf(haul$stop_location)
+haul$geometry <- ifelse(
+  st_is_empty(haul$start_location),
+    haul$stop_location,
+  ifelse(st_is_empty(haul$stop_location), haul$start_location, st_centroid(haul$start_location, haul$stop_location)))
   return(haul)
 }
 
@@ -62,3 +74,17 @@ haul_metadata <- haul_metadata %>% select(-c(trip_fk.x, trip_fk.y))
 haul_metadata_trip <- haul_metadata %>% left_join(trip, by=join_by(trip_fk == id))
 
 mega <- haul_metadata_trip %>% left_join(data, by=join_by(id == ctd_metadata_fk))
+
+result <- data.frame(matrix(nrow= nrow(mega), ncol=0))
+result$cruise <- paste0(mega$year, mega$sample_number)
+result$station <- mega$station_number
+
+result$type <- "C"
+result$"yyyy-mm-ddThh:mm:ss.sss" <- coalesce(mega$start_time.x, mega$stop_time)
+
+result$latitude <- lapply(
+  mega$geometry,
+  function(geom) {return(st_coordinates(geom)[,2])})
+result$longitude <- lapply(
+  mega$geometry,
+  function(geom) {return(st_coordinates(geom)[,1])})
