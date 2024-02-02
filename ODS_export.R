@@ -98,14 +98,14 @@ result$"Custodian Code [EDMO]" <- 5013
 result$"Originator Code [EDMO]" <- 5013
 result$"Project Code [EDMERP]" <- 11272 #BIAS, TODO: project?
 result$"Pressure [dbar] or Depth [m]" <- mega$pressure
-result$"QV:ODV:Depth [m]" <- mega$pressure_qv
+#result$"QV:ODV:Depth [m]" <- mega$pressure_qv
 
 result$"Temperature [degC]" <- mega$temperature
-result$"QV:ODV:Temperature [degC]" <- mega$temperature_qv
+#result$"QV:ODV:Temperature [degC]" <- mega$temperature_qv
 result$"Practical Salinity [dmnless]" <- mega$salinity_practical
-result$"QV:ODV:Practical Salinity [dmnless]" <- mega$salinity_practical_qv
+#result$"QV:ODV:Practical Salinity [dmnless]" <- mega$salinity_practical_qv
 result$"Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved
-result$"QV:ODV:Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved_qv
+#result$"QV:ODV:Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved_qv
 
 outdir <- paste0(c(wd, "out"), collapse="/")
 dir.create(outdir, showWarnings = FALSE)
