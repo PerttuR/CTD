@@ -75,28 +75,28 @@ haul_metadata_trip <- haul_metadata %>% left_join(trip, by=join_by(trip_fk == id
 mega <- haul_metadata_trip %>% left_join(data, by=join_by(id == ctd_metadata_fk))
 
 result <- data.frame(matrix(nrow= nrow(mega), ncol=0))
-result$cruise <- paste0(mega$year, mega$sample_number)
-result$station <- mega$station_number
+result$"Cruise" <- paste0(mega$year, mega$sample_number)
+result$"Station" <- mega$station_number
 
-result$type <- "C"
+result$"Type" <- "C"
 result$"yyyy-mm-ddThh:mm:ss.sss" <- coalesce(mega$start_time.x, mega$stop_time)
 
-result$latitude <- unlist(lapply(
+result$"Latitude [degrees_north]" <- unlist(lapply(
   mega$geometry,
   function(geom) {return(st_coordinates(geom)[,2])}))
-result$longitude <- unlist(lapply(
+result$"Longitude [degrees_east]" <- unlist(lapply(
   mega$geometry,
   function(geom) {return(st_coordinates(geom)[,1])}))
 
 result$"Bot. Depth [m]" <- mega$bottom_depth
 
-result$"Platform Code" <- "34A1" # TODO: get this from shipyear for Dana
-result$"Device Category Code" <- mega$device_category_code
-result$"Distributor Code" <- 5013 #Natural Resources Institute Finland (Main Office)
-result$"Custodian Code" <- 5013
+result$"Platform Code [C17]" <- "34A1" # TODO: get this from shipyear for Dana
+result$"Device Category Code [L05]" <- mega$device_category_code
+result$"Distributor Code [EDMO]" <- 5013 #Natural Resources Institute Finland (Main Office)
+result$"Custodian Code [EDMO]" <- 5013
 
-result$"Originator Code" <- 5013
-result$"Project Code" <- 11272 #BIAS, TODO: project?
+result$"Originator Code [EDMO]" <- 5013
+result$"Project Code [EDMERP]" <- 11272 #BIAS, TODO: project?
 result$"Pressure [dbar] or Depth [m]" <- mega$pressure
 result$"QV:ODV:Depth [m]" <- mega$pressure_qv
 
