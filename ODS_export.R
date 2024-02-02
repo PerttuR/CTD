@@ -1,9 +1,7 @@
 library(data.table)
 library(tibble)
 library(expss)
-library(splitstackshape)
-library(rLakeAnalyzer)
-library (reshape2)
+library(reshape2)
 library(purrr)
 library(dplyr)
 library(readxl)
@@ -67,7 +65,8 @@ haul <- get.haul(trip)
 metadata <- get.metadata(trip, haul)
 data <- get.data(metadata)
 
-haul_metadata <- haul %>% left_join(metadata, by=join_by(id == haul_fk))
+
+haul_metadata <- metadata %>% left_join(haul, by=join_by(haul_fk == id))
 haul_metadata$trip_fk <- coalesce(haul_metadata$trip_fk.x, haul_metadata$trip_fk.y)
 haul_metadata <- haul_metadata %>% select(-c(trip_fk.x, trip_fk.y))
 
