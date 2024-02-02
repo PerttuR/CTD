@@ -1,0 +1,25 @@
+//<MetaVariable>label="Cruise" var_type="METACRUISE" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Station" var_type="METASTATION" value_type="TEXT:21" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Type" var_type="METATYPE" value_type="TEXT:2" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="yyyy-mm-ddThh:mm:ss.sss" var_type="METABASIC" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Longitude [degrees_east]" var_type="METALONGITUDE" value_type="FLOAT" qf_schema="ODV" significant_digits="4" comment=""</MetaVariable>
+//<MetaVariable>label="Latitude [degrees_north]" var_type="METALATITUDE" value_type="FLOAT" qf_schema="ODV" significant_digits="4" comment=""</MetaVariable>
+//<MetaVariable>label="Bot. Depth [m]" var_type="METABOTDEPTH" value_type="FLOAT" qf_schema="ODV" significant_digits="1" comment=""</MetaVariable>
+//<MetaVariable>label="Platform Code [C17]" var_type="METAPLATFORM" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Device Category Code [L05]" var_type="METABASIC" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Distributor Code [EDMO]" var_type="METABASIC" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Custodian Code [EDMO]" var_type="METABASIC" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Originator Code [EDMO]" var_type="METABASIC" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//<MetaVariable>label="Project Code [EDMERP]" var_type="METAPROJECT" value_type="INDEXED_TEXT" qf_schema="ODV" significant_digits="0" comment=""</MetaVariable>
+//
+//<DataVariable>label="Pressure [dbar]" value_type="FLOAT" qf_schema="ODV" significant_digits="1" is_primary_variable="F" comment=""</DataVariable>
+//<DataVariable>label="Temperature [degC]" value_type="FLOAT" qf_schema="ODV" significant_digits="3" is_primary_variable="F" comment=""</DataVariable>
+//<DataVariable>label="Practical Salinity [dmnless]" value_type="FLOAT" qf_schema="ODV" significant_digits="3" is_primary_variable="F" comment=""</DataVariable>
+//<DataVariable>label="Dissolved Oxygen [ml/l]" value_type="FLOAT" qf_schema="ODV" significant_digits="2" is_primary_variable="F" comment=""</DataVariable>
+//
+//ICES_parameter_mapping
+//<subject>ICES:LOCAL:Pressure</subject><object>ICES:P01::PRESPR01</object><units>ICES:P06::UPDB</units>
+//<subject>ICES:LOCAL:Temperature</subject><object>ICES:P01::TEMPPR01</object><units>ICES:P06::UPAA</units>
+//<subject>ICES:LOCAL:Practical Salinity</subject><object>ICES:P01::PSALPR01</object><units>ICES:P06::UUUU</units>
+//<subject>ICES:LOCAL:Dissolved Oxygen</subject><object>ICES:P01::DOXYZZXX</object><units>ICES:P06::UMLL</units>
+//

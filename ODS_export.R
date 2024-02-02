@@ -108,5 +108,8 @@ result$"Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved
 result$"QV:ODV:Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved_qv
 
 outdir <- paste0(c(wd, "out"), collapse="/")
+template <- paste0(c(wd, "export_template.txt"), collapse="/")
 dir.create(outdir, showWarnings = FALSE)
-write.table(result, file=paste0(outdir, "/ODS-", year, ".csv"), na="", row.names=FALSE, dec=".", sep=";")
+outfile <- paste0(outdir, "/ODS-", year, ".txt")
+file.copy(template, outfile, overwrite=TRUE)
+write.table(result, file=outfile, na="", row.names=FALSE, dec=".", sep=";", append=TRUE)
