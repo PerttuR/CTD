@@ -59,7 +59,7 @@ get.data <- function(metadata) {
 wd <- getwd()
 handler <- get.handler()
 
-year <- 2023
+year <- 2022
 trip <- get.trip(year)
 haul <- get.haul(trip)
 metadata <- get.metadata(trip, haul)
@@ -83,10 +83,10 @@ result$"yyyy-mm-ddThh:mm:ss.sss" <- coalesce(mega$start_time.x, mega$stop_time)
 
 result$"Latitude [degrees_north]" <- unlist(lapply(
   mega$geometry,
-  function(geom) {return(st_coordinates(geom)[,2])}))
+  function(geom) {ifelse(is.null(geom), NA, st_coordinates(geom)[,2])}))
 result$"Longitude [degrees_east]" <- unlist(lapply(
   mega$geometry,
-  function(geom) {return(st_coordinates(geom)[,1])}))
+  function(geom) {ifelse(is.null(geom), NA, st_coordinates(geom)[,1])}))
 
 result$"Bot. Depth [m]" <- mega$bottom_depth
 
@@ -109,4 +109,4 @@ result$"QV:ODV:Dissolved Oxygen [ml/l]" <- mega$oxygen_dissolved_qv
 
 outdir <- paste0(c(wd, "out"), collapse="/")
 dir.create(outdir, showWarnings = FALSE)
-write.csv2(result, file=paste0(outdir, "/ODS-", year, ".csv"), na="", row.names=FALSE)
+write.table(result, file=paste0(outdir, "/ODS-", year, ".csv"), na="", row.names=FALSE, dec=".", sep=";")
