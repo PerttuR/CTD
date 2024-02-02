@@ -65,6 +65,7 @@ rsconnect/
 
 # Database connection parameters
 db_params.R
+db_params_suomu_example.R
 
 #output files
 out/
