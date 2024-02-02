@@ -59,7 +59,7 @@ get.data <- function(metadata) {
 wd <- getwd()
 handler <- get.handler()
 
-year <- 2022
+year <- 2023
 trip <- get.trip(year)
 haul <- get.haul(trip)
 metadata <- get.metadata(trip, haul)
