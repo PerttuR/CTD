@@ -58,7 +58,7 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
 
   rectangle <- str_match_wrapper(
     metadata,
-    "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
+    "\\*\\* Station name\\s*:\\s*(?<rectangle>.+)")$rectangle
   if(length(rectangle) == 0) {
     stop(paste0(filename, ": Could not find rectangle"))
   }
@@ -74,13 +74,13 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
   result$handler_fk <- handler
 
   timeDf <- str_match_wrapper(metadata,
-    "\\*\\* Date and time \\(UTC\\):0*(?<time>.+)")
+    "\\*\\* Date and time \\(UTC\\)\\s*:\\s*0*(?<time>.+)")
   result$ctd_calculation_time <- time.fix(timeDf$time)
 
   longitudeDf <- str_match_wrapper(metadata,
-    "\\*\\* Latitude:0*(?<longitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
+    "\\*\\* Latitude\\s*:\\s*0*(?<longitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
   latitudeDf <- str_match_wrapper(metadata,
-    "\\*\\* Longitude:0*(?<latitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
+    "\\*\\* Longitude\\s*:\\s*0*(?<latitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
 
   result$location <- paste0("POINT (",
     coordinate.fix(latitudeDf$latitude),
@@ -89,16 +89,16 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
     ")"
   )
 
-  depthDf <- str_match_wrapper(metadata, "\\*\\* Depth:0*(?<depth>[0-9]+)")
+  depthDf <- str_match_wrapper(metadata, "\\*\\* Depth\\s*:\\s*0*(?<depth>[0-9]+)")
   result$bottom_depth <- depthDf$depth
 
   #static code
   result$device_category_code <- 130
 
-  indexDf <- str_match_wrapper(metadata, "\\*\\* Index:0*(?<index>[0-9]+)")
+  indexDf <- str_match_wrapper(metadata, "\\*\\* Index\\s*:\\s*0*(?<index>[0-9]+)")
   result$aranda_index <- indexDf$index
 
-  deviceDf <- str_match_wrapper(metadata, "\\* (?<device>.+) Data File:")
+  deviceDf <- str_match_wrapper(metadata, "\\* (?<device>.+) Data File\\s*:\\s*")
   result$ctd_device <- deviceDf$device
 
   return(result)
