@@ -38,7 +38,9 @@ time.fix <- function(time) {
   return(result)
 }
 
-extract.metadata <- function(metadata, trip, haul.map, handler) {
+extract.metadata <- function(entry, trip, haul.map, handler) {
+  metadata <- entry$metadata
+  filename <- entry$file
   cols <- c(
     "id",
     "handler_fk",
@@ -57,6 +59,9 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   rectangle <- str_match_wrapper(
     metadata,
     "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
+  if(length(rectangle) == 0) {
+    stop(paste0("Missing rectangle for file ", filename))
+  }
   if(rectangle %in% names(haul.map)) {
     result$haul_fk <- haul.map[rectangle]
   } else {
@@ -131,6 +136,7 @@ rename.data <- function(data) {
 }
 
 read.cnv <- function(path) {
+  filename <- basename(path)
   lines = readLines(path)
   for(row in seq_along(lines)) {
     if(lines[row] == "*END*") {
@@ -144,10 +150,10 @@ read.cnv <- function(path) {
       dataNames <- dataNames %>% filter(!is.na(number)) %>% mutate(number = as.numeric(number) + 1) %>% arrange(number)
       names(data) <- dataNames$name
       data <- rename.data(data)
-      return(setNames(list(data, metadata), c("data", "metadata")))
+      return(setNames(list(data, metadata, filename), c("data", "metadata", "file")))
     }
   }
-  return(setNames(list(lines, NULL), c("metadata", "data")))
+  return(setNames(list(lines, NULL, filename), c("metadata", "data", "file")))
 }
 
 check.empty <- function(trip) {

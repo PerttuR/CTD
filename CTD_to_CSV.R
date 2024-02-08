@@ -39,7 +39,7 @@ data_wd <- paste0(wd,paste0("/", year, " data"))
 cnvFiles <- list.files(data_wd, pattern="*.cnv")
 parsed <- lapply(cnvFiles, function(el) {return(read.cnv(paste0(data_wd, "/",el)))})
 parsed <- lapply(parsed, function(el) {
-  el$extracted <- extract.metadata(el$metadata, trip, haul_map, default_handler)
+  el$extracted <- extract.metadata(el, trip, haul_map, default_handler)
   return(el)
 })
 
