@@ -57,7 +57,11 @@ extract.metadata <- function(metadata, trip, haul.map, handler) {
   rectangle <- str_match_wrapper(
     metadata,
     "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
-  result$haul_fk <- haul.map[rectangle]
+  if(rectangle %in% names(haul.map)) {
+    result$haul_fk <- haul.map[rectangle]
+  } else {
+    stop(paste0("Missing haul for rectangle "), rectangle)
+  }
 
   if(is.na(result$haul_fk)) {
     result$trip_fk <- trip$id
