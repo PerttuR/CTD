@@ -60,12 +60,12 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
     metadata,
     "\\*\\* Station name ?:(?<rectangle>.+)")$rectangle
   if(length(rectangle) == 0) {
-    stop(paste0("Missing rectangle for file ", filename))
+    stop(paste0(filename, ": Could not find rectangle"))
   }
   if(rectangle %in% names(haul.map)) {
     result$haul_fk <- haul.map[rectangle]
   } else {
-    stop(paste0("Missing haul for rectangle "), rectangle)
+    warning(paste0(filename, ": Missing haul for rectangle "), rectangle)
   }
 
   if(is.na(result$haul_fk)) {
