@@ -15,7 +15,7 @@ rm(list = ls())
 source("./db.R")
 source("./cnv.R")
 
-year <- 2023
+year <- 2021
 default_handler <- 27
 ########## create a 2023 CTD data file
 #PATHS
@@ -27,13 +27,13 @@ if(nrow(handler %>% filter(id == default_handler)) < 1) {
   stop("Missing default handler")
 }
 
-#parsittava vuosi / year to be parsed
+#trip tiedot tutkimusmatkasta, jossa parsittava vuosi / survey trip where year to be parsed
 trip <- get.trip(year) 
 #tarkistaa onko metadata jo olemassa / check if data already exist
 check.empty(trip)
-#map haul ID from SUOMU DB
+#map haul ID:s from SUOMU DB from selected survey trip
 haul_map <- get.haul.map(trip)
-#where files exist
+#path where to location cnv files exist
 data_wd <- paste0(wd,paste0("/", year, " data"))
 
 cnvFiles <- list.files(data_wd, pattern="*.cnv")
