@@ -107,8 +107,10 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
 rename.data <- function(data) {
   name.map <- c(
     "prdM" = "pressure",
+    "prDM" = "pressure",
     "tv290C" = "temperature",
     "t068C" = "temperature",
+    "t090C" = "temperature",
     "t168C" = "temperature_qv",
     "c0mS/cm" = "conductivity",
     "c1mS/cm" = "conductivity_qv",

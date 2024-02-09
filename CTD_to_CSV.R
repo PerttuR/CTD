@@ -15,7 +15,7 @@ rm(list = ls())
 source("./db.R")
 source("./cnv.R")
 
-year <- 2021
+year <- 2018
 default_handler <- 27
 ########## create a 2023 CTD data file
 #PATHS
