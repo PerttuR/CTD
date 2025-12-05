@@ -1,21 +1,23 @@
+rm(list = ls())
+
 library(data.table)
 library(tibble)
 library(expss)
 library(splitstackshape)
 library(rLakeAnalyzer)
-library (reshape2)
+library(reshape2)
 library(purrr)
 library(dplyr)
 library(readxl)
 library(stringr)
-rm(list = ls())
+
 
 #Get haul map
 
 source("./db.R")
 source("./cnv.R")
 
-year <- 2018
+year <- 2025
 default_handler <- 27
 ########## create a 2023 CTD data file
 #PATHS

@@ -81,7 +81,10 @@ extract.metadata <- function(entry, trip, haul.map, handler) {
     "\\*\\* Latitude\\s*:\\s*0*(?<longitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
   latitudeDf <- str_match_wrapper(metadata,
     "\\*\\* Longitude\\s*:\\s*0*(?<latitude>[0-9]{1,2} [0-9]{1,2}(.[0-9]+)?)")
+  
+print(paste("Paikkatiedot",longitudeDf,latitudeDf, sep = ""))
 
+  
   result$location <- paste0("POINT (",
     coordinate.fix(latitudeDf$latitude),
     " ",
